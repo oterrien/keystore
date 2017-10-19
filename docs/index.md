@@ -28,28 +28,23 @@ An admin is manager for all groups and inherit their rights.<br>
 
 ## Secret perimeter
 
-Defining a secret consists in setting a password or a secret value to an object
-A tree of object could be defined
+Defining a secret consists in setting a password or a secret value to an object and to attach this object to a group.<br>
+Groups and secret objects can be built as a tree.<br>
+Each group node can be granted for being read or managed.<br>
 
 ````
-source/
+root
 |
-|- stylesheets/
-|  |- app.scss _____________________ # App Structure
+|- group_1
+|  |- secret_10
 |
-|  |- modules/
-|    |- _footer.scss _______________ # Footer
-|    |- _header.scss _______________ # Header
+|  |- group_12
+|    |- secret_120
+|    |- secret_121
+|    |- group_123
+|       |- secret_1230
 |
-|  |- base/
-|    |- _base.scss _________________ # Base styles
-|    |- _mixins.scss _______________ # Sass Mixins
-|    |- _type.scss _________________ # Typography
-|    |- _variables.scss ____________ # Variables
+|  |- group_22
+|    |- secret_220
+|    |- secret_221
 ````
-
-
-Secret value are grouped by perimeter.
-Perimeters are managed by managers
-
-Secret
