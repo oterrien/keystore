@@ -41,3 +41,7 @@ Secret value are grouped by perimeter.
                                                      \-------| Market Book |
                                                              +-------------+
 ```
+
+```formula
+\sum\limits_{i=1}^j Q_i \leq N
+```
