@@ -4,7 +4,7 @@ Keystore aims to provide an web interface in order to manage passwords and secre
 
 A user should be able to log in the application.<br>
 He is also able to change his own information.<br>
-He should be able to ask for reseting his password.<br>
+He should be able to ask for resetting his password.<br>
 He is created by an admin who is authorized to attach him several roles.<br>
 
 A same user can be reader for a given perimeter and contributor for another.<br>
@@ -25,3 +25,19 @@ He is notified when a user asks for a roles on a group he manages and can accept
 
 An admin is responsible of creating and removing users.<br>
 An admin is manager for all groups and inherit their rights.<br>
+
+## Secret perimeter
+
+Secret value are grouped by perimeter.
+
+```ditaa
+                                                             +-------------+
+                                                     /------ | Market Book |
+/--------------\     submit order  /-------------\   |       +-------------+
+| Electronic   | ----------------> | Transaction |---/              .
+| Trading      |                   | Router      |------ ...        .
+| Network cBLK | <---------------- |        cRED |---\              .
+\--------------/   order status    \-------------/   |       +-------------+
+                                                     \-------| Market Book |
+                                                             +-------------+
+```
