@@ -28,20 +28,30 @@ An admin is manager for all groups and inherit their rights.<br>
 
 ## Secret perimeter
 
+Defining a secret consists in setting a password or a secret value to an object
+A tree of object could be defined
+
+```
+project
+│   README.md
+│   file001.txt
+│
+└───folder1
+│   │   file011.txt
+│   │   file012.txt
+│   │
+│   └───subfolder1
+│       │   file111.txt
+│       │   file112.txt
+│       │   ...
+│
+└───folder2
+    │   file021.txt
+    │   file022.txt
+```
+
+
 Secret value are grouped by perimeter.
+Perimeters are managed by managers
 
-```ditaa
-                                                             +-------------+
-                                                     /------ | Market Book |
-/--------------\     submit order  /-------------\   |       +-------------+
-| Electronic   | ----------------> | Transaction |---/              .
-| Trading      |                   | Router      |------ ...        .
-| Network cBLK | <---------------- |        cRED |---\              .
-\--------------/   order status    \-------------/   |       +-------------+
-                                                     \-------| Market Book |
-                                                             +-------------+
-```
-
-```formula
-\sum\limits_{i=1}^j Q_i \leq N
-```
+Secret
