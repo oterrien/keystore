@@ -31,24 +31,22 @@ An admin is manager for all groups and inherit their rights.<br>
 Defining a secret consists in setting a password or a secret value to an object
 A tree of object could be defined
 
-```
-project
-│   README.md
-│   file001.txt
-│
-└───folder1
-│   │   file011.txt
-│   │   file012.txt
-│   │
-│   └───subfolder1
-│       │   file111.txt
-│       │   file112.txt
-│       │   ...
-│
-└───folder2
-    │   file021.txt
-    │   file022.txt
-```
+````
+source/
+|
+|- stylesheets/
+|  |- app.scss _____________________ # App Structure
+|
+|  |- modules/
+|    |- _footer.scss _______________ # Footer
+|    |- _header.scss _______________ # Header
+|
+|  |- base/
+|    |- _base.scss _________________ # Base styles
+|    |- _mixins.scss _______________ # Sass Mixins
+|    |- _type.scss _________________ # Typography
+|    |- _variables.scss ____________ # Variables
+````
 
 
 Secret value are grouped by perimeter.
