@@ -3,7 +3,7 @@ Keystore aims to provide an web interface in order to manage passwords and secre
 ## User and roles
 
 A user should be able to log in the application.<br>
-He is also able to change its own information.<br>
+He is also able to change his own information.<br>
 He should be able to ask for reseting his password.<br>
 He is created by an admin who is authorized to attach him several roles.<br>
 
