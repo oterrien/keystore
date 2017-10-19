@@ -1,5 +1,27 @@
-# TEST
+Keystore aims to provide an web interface in order to manage passwords and secret keys.<br>
 
-toto
+## User and roles
 
-**titi
+A user should be able to log in the application.<br>
+He is also able to change its own information.<br>
+He should be able to ask for reseting his password.<br>
+He is created by an admin who is authorized to attach him several roles.<br>
+
+A same user can be reader for a given perimeter and contributor for another.<br>
+When a user want "reader" or "manager" roles, he has to ask the manager for being granted.<br>
+
+### Reader
+
+The reader is authorized to view and copy some secret keys.<br>
+
+### Manager
+
+A manager is responsible of secret key group.<br>
+He is able to grant any user for any group he manages.<br>
+He is able to grant read roles but also manager roles to other users.<br>
+He is notified when a user asks for a roles on a group he manages and can accept or refuse.<br>
+
+### Admin
+
+An admin is responsible of creating and removing users.<br>
+An admin is manager for all groups and inherit their rights.<br>
