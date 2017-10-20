@@ -41,16 +41,16 @@ Each group node can be granted for being read or managed.<br>
 root
 |
 |- group_1
-    |- secret_10
+    |- secret_1_0
 
-    |- group_12
-        |- secret_120
-        |- secret_121
-        |- group_123
-            |- secret_1230
+    |- group_1_2
+        |- secret_1_2_0
+        |- secret_1_2_1
+        |- group_1_2_3
+            |- secret_1_2_3_0
 
-    |- group_22
-        |- secret_220
-        |- secret_221
+    |- group_2_2
+        |- secret_2_2_0
+        |- secret_2_2_1
 ````
 
