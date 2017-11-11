@@ -56,5 +56,4 @@ root
 
 ## Class Diagram
 
-[[./class-diag.png]]
-
+![schema](class-diag.png)
