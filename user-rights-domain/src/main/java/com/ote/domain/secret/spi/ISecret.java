@@ -1,7 +1,5 @@
 package com.ote.domain.secret.spi;
 
-import com.ote.domain.secret.business.model.Group;
-
 public interface ISecret {
 
     long getId();
@@ -12,7 +10,7 @@ public interface ISecret {
 
     void setName(String name);
 
-    Group getParent();
+    IGroup getParent();
 
-    void setParent(Group parent);
+    void setParent(IGroup parent);
 }

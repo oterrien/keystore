@@ -3,29 +3,34 @@ package com.ote.domain;
 import com.ote.domain.secret.spi.ISecret;
 import com.ote.domain.secret.spi.ISecretRepository;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SecretRepositoryMock implements ISecretRepository {
 
-    private final Set<ISecret> secretList = new HashSet<>();
+    private final List<ISecret> secretList = new ArrayList<>();
 
-    public long create(ISecret secret) {
-        long id = secretList.size() + 1;
+    private AtomicLong id = new AtomicLong(0);
+
+    @Override
+    public long save(ISecret secret) {
+
+        if (secret.getId() != 0) {
+            secretList.removeIf(p -> p.getId() == secret.getId());
+        }
+
+        long id = secret.getId() == 0 ? this.id.incrementAndGet() : secret.getId();
         secret.setId(id);
         secretList.add(secret);
+        if (secret.getParent() != null) {
+            save(secret.getParent());
+        }
         return id;
     }
 
     public Optional<ISecret> find(long id) {
         return secretList.stream().filter(p -> p.getId() == id).findAny();
-    }
-
-    @Override
-    public void update(long id, ISecret secret) {
-        secretList.removeIf(p -> p.getId() == id);
-        secret.setId(id);
-        secretList.add(secret);
     }
 }

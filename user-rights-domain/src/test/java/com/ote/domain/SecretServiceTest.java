@@ -1,139 +1,126 @@
 package com.ote.domain;
 
+import com.ote.domain.model.Group;
+import com.ote.domain.model.SecretFactory;
+import com.ote.domain.model.Value;
 import com.ote.domain.secret.api.ISecretService;
-import com.ote.domain.secret.business.SecretService;
-import com.ote.domain.secret.business.model.Group;
-import com.ote.domain.secret.business.model.Value;
+import com.ote.domain.secret.api.ServiceProvider;
+import com.ote.domain.secret.business.NotFoundException;
+import com.ote.domain.secret.spi.IGroup;
 import com.ote.domain.secret.spi.ISecret;
 import com.ote.domain.secret.spi.ISecretRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("unit")
 @Slf4j
 public class SecretServiceTest {
 
-    private ISecretRepository secretRepository;
+    private ISecretService secretService;
 
-    private Group root;
+    private IGroup root;
+
+    private static final SecretFactory secretFactory = new SecretFactory();
 
     @BeforeEach
     public void setUp() {
-        secretRepository = new SecretRepositoryMock();
-        root = new Group();
-        root.setName("root");
-        secretRepository.create(root);
+        this.root = secretFactory.createGroup("root", null);
+        ISecretRepository secretRepository = new SecretRepositoryMock();
+        secretRepository.save(root);
+        secretService = ServiceProvider.getInstance().getSecretService(secretRepository);
     }
 
     @Test
     @DisplayName("a user should be able to create a secret value")
-    public void aUserShouldBeAbleToCreateASecretValue(TestInfo testInfo) {
+    public void aUserShouldBeAbleToCreateASecretValue(TestInfo testInfo) throws Exception {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        ISecretService secretService = new SecretService(this.secretRepository);
-        long id = secretService.createValue("myValue", "password", root);
+        long id = secretService.createValue(secretFactory.createValue("myValue", "password", root));
+        ISecret secret = secretService.find(id);
 
-        Optional<ISecret> secret = secretRepository.find(id);
-
-        log.debug("Value : " + secret.get());
-
-        Assertions.assertThat(secret).isPresent();
-        Assumptions.assumeTrue(secret.isPresent());
+        log.debug("Secret : " + secret);
 
         SoftAssertions assertions = new SoftAssertions();
-        assertions.assertThat(secret.get()).isExactlyInstanceOf(Value.class);
-        assertions.assertThat(secret.get().getName()).isEqualTo("myValue");
-        assertions.assertThat(secret.get().getParent()).isEqualTo(root);
-        assertions.assertThat(secret.get().getParent().getChildren()).contains(secret.get());
-        assertions.assertThat(((Value) secret.get()).getValue()).isEqualTo("password");
+        assertions.assertThat(secret).isExactlyInstanceOf(Value.class);
+        assertions.assertThat(secret.getName()).isEqualTo("myValue");
+        assertions.assertThat(secret.getParent()).isEqualTo(root);
+        assertions.assertThat(((Value) secret).getValue()).isEqualTo("password");
+        assertions.assertThat(secret.getParent().getChildren()).contains(secret);
         assertions.assertAll();
+    }
+
+    @Test
+    @DisplayName("a user should not be able to find secret when not exist")
+    public void aUserShouldNotBeAbleToFindSecretWhenNotExist(TestInfo testInfo) throws Exception {
+
+        log.info("################ " + testInfo.getDisplayName() + " ################");
+        assertThrows(NotFoundException.class, () -> secretService.find(1000));
     }
 
 
     @Test
     @DisplayName("a user should be able to create an empty group")
-    public void aUserShouldBeAbleToCreateAnEmptyGroup(TestInfo testInfo) {
+    public void aUserShouldBeAbleToCreateAnEmptyGroup(TestInfo testInfo) throws Exception {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        ISecretService secretService = new SecretService(this.secretRepository);
-        long id = secretService.createGroup("myGroup", root);
+        long id = secretService.createGroup(secretFactory.createGroup("myGroup", root));
+        ISecret secret = secretService.find(id);
 
-        Optional<ISecret> secret = secretRepository.find(id);
-
-        Assertions.assertThat(secret).isPresent();
-        Assumptions.assumeTrue(secret.isPresent());
-
-        log.debug("Group : " + secret.get());
+        log.debug("Secret : " + secret);
 
         SoftAssertions assertions = new SoftAssertions();
-        assertions.assertThat(secret.get()).isExactlyInstanceOf(Group.class);
-        assertions.assertThat(secret.get().getName()).isEqualTo("myGroup");
-        assertions.assertThat(secret.get().getParent()).isEqualTo(root);
-        assertions.assertThat(secret.get().getParent().getChildren()).contains(secret.get());
+        assertions.assertThat(secret).isExactlyInstanceOf(Group.class);
+        assertions.assertThat(secret.getName()).isEqualTo("myGroup");
+        assertions.assertThat(secret.getParent()).isEqualTo(root);
+        assertions.assertThat(secret.getParent().getChildren()).contains(secret);
         assertions.assertAll();
     }
 
     @Test
     @DisplayName("a user should be able to add a value to a group")
-    public void aUserShouldBeAbleToAddAValueToAGroup(TestInfo testInfo) {
+    public void aUserShouldBeAbleToAddAValueToAGroup(TestInfo testInfo) throws Exception {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        ISecretService secretService = new SecretService(this.secretRepository);
-        long idValue = secretService.createValue("myValue", "password", root);
-        long idGroup = secretService.createGroup("myGroup", root);
+        long idValue = secretService.createValue(secretFactory.createValue("myValue", "password", root));
+        long idGroup = secretService.createGroup(secretFactory.createGroup("myGroup", root));
 
-        Optional<ISecret> optGroup = secretRepository.find(idGroup);
-        Assumptions.assumeTrue(optGroup.isPresent());
-        Assumptions.assumeTrue(optGroup.get() instanceof Group);
+        Group group = secretService.find(idGroup, Group.class);
+        Value value = secretService.find(idValue, Value.class);
 
-        Group group = (Group) optGroup.get();
+        secretService.moveToGroup(value, group);
 
-        Optional<ISecret> optValue = secretRepository.find(idValue);
-        Assumptions.assumeTrue(optValue.isPresent());
-        Assumptions.assumeTrue(optValue.get() instanceof Value);
-
-        Value value = (Value) optValue.get();
-
-        secretService.addChildren(group, value);
-
-        optGroup = secretRepository.find(idGroup);
-        Assumptions.assumeTrue(optGroup.isPresent());
+        group = secretService.find(idGroup, Group.class);
+        value = secretService.find(idValue, Value.class);
 
         SoftAssertions assertions = new SoftAssertions();
-        assertions.assertThat(optGroup.get().getParent().getChildren()).contains(value);
+        assertions.assertThat(root.getChildren()).doesNotContain(value);
+        assertions.assertThat(group.getChildren()).containsExactly(value);
+        assertions.assertThat(value.getParent()).isEqualTo(group);
         assertions.assertAll();
     }
 
-
     @Test
-    @DisplayName("a user should be able to add a group to another  group")
-    public void aUserShouldBeAbleToAddAGroupToAGroup(TestInfo testInfo) {
+    @DisplayName("a user should be able to add a group to another group")
+    public void aUserShouldBeAbleToAddAGroupToAGroup(TestInfo testInfo) throws Exception {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        ISecretService secretService = new SecretService(this.secretRepository);
-        long id1 = secretService.createGroup("group1", root);
+        long id1 = secretService.createGroup(secretFactory.createGroup("group1", root));
 
-        Optional<ISecret> optGroup = secretRepository.find(id1);
-        Assumptions.assumeTrue(optGroup.isPresent());
-        Assumptions.assumeTrue(optGroup.get() instanceof Group);
+        Group group1 = secretService.find(id1, Group.class);
+        long id2 = secretService.createGroup(secretFactory.createGroup("group2", group1));
 
-        Group group = (Group) optGroup.get();
-
-        long id2 = secretService.createGroup("group2", group);
-
-        optGroup = secretRepository.find(id2);
-        Assumptions.assumeTrue(optGroup.isPresent());
+        Group group2 = secretService.find(id2, Group.class);
 
         SoftAssertions assertions = new SoftAssertions();
-        assertions.assertThat(optGroup.get().getParent()).isEqualTo(group);
+        assertions.assertThat(group2.getParent()).isEqualTo(group1);
+        assertions.assertThat(group1.getChildren()).contains(group2);
         assertions.assertAll();
     }
 }

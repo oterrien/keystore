@@ -4,9 +4,7 @@ import java.util.Optional;
 
 public interface ISecretRepository {
 
-    long create(ISecret secret);
+    long save(ISecret secret);
 
     Optional<ISecret> find(long id);
-
-    void update(long id, ISecret secret);
 }
