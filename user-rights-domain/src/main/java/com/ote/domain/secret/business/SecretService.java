@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SecretService implements ISecretService {
 
-    // region Factory
+    // region Factory...
     @Getter
     private static final Factory Factory = new Factory();
 
