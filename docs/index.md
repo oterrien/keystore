@@ -56,5 +56,5 @@ root
 
 ## Class Diagram
 
-<img src="./class-diag.png"/>
+[[./class-diag.png]]
 
