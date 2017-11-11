@@ -1,5 +1,7 @@
 package com.ote.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ote.JsonUtils;
 import com.ote.domain.secret.spi.IGroup;
 import com.ote.domain.secret.spi.ISecret;
 import lombok.AccessLevel;
@@ -15,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Group extends AdtSecret implements IGroup {
 
+    @JsonIgnore
     private final List<ISecret> children = new ArrayList<>();
 
     public ISecret[] getChildren() {

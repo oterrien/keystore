@@ -42,8 +42,6 @@ public class SecretServiceTest {
         long id = secretService.create(secretFactory.createValue("myValue", "password", root));
         ISecret secret = secretService.find(id);
 
-        log.debug("Secret : " + secret);
-
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(secret).isExactlyInstanceOf(Value.class);
         assertions.assertThat(secret.getName()).isEqualTo("myValue");
@@ -71,8 +69,6 @@ public class SecretServiceTest {
         long id = secretService.create(secretFactory.createGroup("myGroup", root));
         ISecret secret = secretService.find(id);
 
-        log.debug("Secret : " + secret);
-
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(secret).isExactlyInstanceOf(Group.class);
         assertions.assertThat(secret.getName()).isEqualTo("myGroup");
@@ -98,6 +94,8 @@ public class SecretServiceTest {
         group = secretService.find(idGroup, Group.class);
         value = secretService.find(idValue, Value.class);
 
+        log.info("Value: " + value);
+
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(root.getChildren()).doesNotContain(value);
         assertions.assertThat(group.getChildren()).containsExactly(value);
@@ -121,6 +119,8 @@ public class SecretServiceTest {
 
         group1 = secretService.find(id1, Group.class);
         group2 = secretService.find(id2, Group.class);
+
+        log.info("Group: " + group2);
 
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(root.getChildren()).doesNotContain(group2);
