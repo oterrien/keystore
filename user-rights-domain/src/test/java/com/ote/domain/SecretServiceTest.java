@@ -39,7 +39,7 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long id = secretService.createValue(secretFactory.createValue("myValue", "password", root));
+        long id = secretService.create(secretFactory.createValue("myValue", "password", root));
         ISecret secret = secretService.find(id);
 
         log.debug("Secret : " + secret);
@@ -68,7 +68,7 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long id = secretService.createGroup(secretFactory.createGroup("myGroup", root));
+        long id = secretService.create(secretFactory.createGroup("myGroup", root));
         ISecret secret = secretService.find(id);
 
         log.debug("Secret : " + secret);
@@ -87,13 +87,13 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long idValue = secretService.createValue(secretFactory.createValue("myValue", "password", root));
-        long idGroup = secretService.createGroup(secretFactory.createGroup("myGroup", root));
+        long idValue = secretService.create(secretFactory.createValue("myValue", "password", root));
+        long idGroup = secretService.create(secretFactory.createGroup("myGroup", root));
 
         Group group = secretService.find(idGroup, Group.class);
         Value value = secretService.find(idValue, Value.class);
 
-        secretService.moveToGroup(value, group);
+        secretService.move(value, group);
 
         group = secretService.find(idGroup, Group.class);
         value = secretService.find(idValue, Value.class);
@@ -106,21 +106,26 @@ public class SecretServiceTest {
     }
 
     @Test
-    @DisplayName("a user should be able to add a group to another group")
+    @DisplayName("a user should be able to move a group to another group")
     public void aUserShouldBeAbleToAddAGroupToAGroup(TestInfo testInfo) throws Exception {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long id1 = secretService.createGroup(secretFactory.createGroup("group1", root));
+        long id1 = secretService.create(secretFactory.createGroup("group1", root));
+        long id2 = secretService.create(secretFactory.createGroup("group2", root));
 
         Group group1 = secretService.find(id1, Group.class);
-        long id2 = secretService.createGroup(secretFactory.createGroup("group2", group1));
-
         Group group2 = secretService.find(id2, Group.class);
 
+        secretService.move(group2, group1);
+
+        group1 = secretService.find(id1, Group.class);
+        group2 = secretService.find(id2, Group.class);
+
         SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat(root.getChildren()).doesNotContain(group2);
+        assertions.assertThat(group1.getChildren()).containsExactly(group2);
         assertions.assertThat(group2.getParent()).isEqualTo(group1);
-        assertions.assertThat(group1.getChildren()).contains(group2);
         assertions.assertAll();
     }
 }

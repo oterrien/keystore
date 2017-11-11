@@ -30,7 +30,7 @@ public final class SecretService implements ISecretService {
     private final ISecretRepository secretRepository;
 
     @Override
-    public long createValue(IValue value) {
+    public long create(IValue value) {
         if (log.isTraceEnabled()) {
             log.trace("Create the value '" + value.getName());
         }
@@ -38,7 +38,7 @@ public final class SecretService implements ISecretService {
     }
 
     @Override
-    public long createGroup(IGroup group) {
+    public long create(IGroup group) {
         if (log.isTraceEnabled()) {
             log.trace("Create the group '" + group.getName());
         }
@@ -46,7 +46,7 @@ public final class SecretService implements ISecretService {
     }
 
     @Override
-    public void moveToGroup(ISecret secret, IGroup destGroup) {
+    public void move(ISecret secret, IGroup destGroup) {
         if (log.isTraceEnabled()) {
             log.trace("move '" + secret.getName() + "' to group '" + destGroup.getName() + "'");
         }

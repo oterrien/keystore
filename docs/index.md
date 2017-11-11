@@ -54,3 +54,7 @@ root
         |- secret_2_2_1
 ````
 
+## Class Diagram
+
+<img src="./class-diag.png"/>
+

@@ -7,11 +7,11 @@ import com.ote.domain.secret.spi.IValue;
 
 public interface ISecretService {
 
-    long createValue(IValue value);
+    long create(IValue value);
 
-    long createGroup(IGroup group);
+    long create(IGroup group);
 
-    void moveToGroup(ISecret secret, IGroup destGroup);
+    void move(ISecret secret, IGroup destGroup);
 
     ISecret find(long id) throws NotFoundException;
 
