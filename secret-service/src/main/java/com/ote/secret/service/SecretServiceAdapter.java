@@ -15,27 +15,27 @@ public class SecretServiceAdapter implements ISecretService {
 
     private ISecretService secretService;
 
-    public SecretServiceAdapter(@Autowired ISecretRepository secretRepositoryAdapter){
-        this.secretService = ServiceProvider.getInstance().getSecretService(secretRepositoryAdapter);
+    public SecretServiceAdapter(@Autowired ISecretRepository secretRepositoryAdapter) {
+        this.secretService = ServiceProvider.getInstance().createSecretService(secretRepositoryAdapter);
     }
 
     @Override
     public long create(IValue value) {
-        return 0;
+        return secretService.create(value);
     }
 
     @Override
     public long create(IGroup group) {
-        return 0;
+        return secretService.create(group);
     }
 
     @Override
     public void move(ISecret secret, IGroup destGroup) {
-
+        secretService.move(secret, destGroup);
     }
 
     @Override
     public ISecret find(long id) throws NotFoundException {
-        return null;
+        return secretService.find(id);
     }
 }

@@ -30,7 +30,7 @@ public class SecretServiceTest {
         this.root = secretFactory.createGroup("root", null);
         ISecretRepository secretRepository = new SecretRepositoryMock();
         secretRepository.save(root);
-        secretService = ServiceProvider.getInstance().getSecretService(secretRepository);
+        secretService = ServiceProvider.getInstance().createSecretService(secretRepository);
     }
 
     @Test

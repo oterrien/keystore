@@ -1,13 +1,9 @@
-package com.ote.secret.rest;
+package com.ote.secret.service;
 
-import com.ote.secret.peristence.SecretEntity;
 import com.ote.secret.peristence.SecretJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SecretMapperService {
@@ -17,6 +13,42 @@ public class SecretMapperService {
 
     @Autowired
     private SecretJpaRepository secretRepository;
+
+/*
+    public ISecret convertToSecret(SecretPayload payload){throw new RuntimeException();
+        */
+/*ISecret secret;
+        if (payload.getValue()!=null){
+            secret = new SecretValue();
+        } else {
+            secret = new SecretGroup();
+        }
+        secret.setId(payload.getId());
+        secret.setName(payload.getName());
+        secret.setParent(convertToGroup(payload.getParent()));
+        if (payload.getValue()!=null){
+            secret.setValue();
+        }
+        return secret;*//*
+
+    }
+
+    private IValue convertToValue(SecretPayload payload){
+        IValue value = new SecretValue();
+        value.setId(payload.getId());
+        value.setName(payload.getName());
+        value.setParent(convertToGroup(payload.getParent()));
+        value.setValue(payload.getValue());
+        return value;
+    }
+
+    private IGroup convertToGroup(SecretPayload payload){
+        IGroup group = new SecretGroup();
+        group.setId(payload.getId());
+        group.setName(payload.getName());
+        group.setParent(convertToGroup(payload.getParent()));
+        return group;
+    }
 
     public List<SecretPayload> convert(List<SecretEntity> entities) {
         return convert(entities, withDetailsDefault);
@@ -80,5 +112,6 @@ public class SecretMapperService {
             setParent(parentEntity, parent.getParent());
         }
     }
+*/
 
 }

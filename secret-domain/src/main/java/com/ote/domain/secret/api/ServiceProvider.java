@@ -12,16 +12,7 @@ public final class ServiceProvider {
     @Getter
     public static final ServiceProvider Instance = new ServiceProvider();
 
-    private ISecretService secretService;
-
-    public ISecretService getSecretService(ISecretRepository secretRepository) {
-        if (secretService == null) {
-            synchronized (this) {
-                if (secretService == null) {
-                    secretService = SecretService.getFactory().create(secretRepository);
-                }
-            }
-        }
-        return secretService;
+    public ISecretService createSecretService(ISecretRepository secretRepository) {
+        return SecretService.getFactory().create(secretRepository);
     }
 }
