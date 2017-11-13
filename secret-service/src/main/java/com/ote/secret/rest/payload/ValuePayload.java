@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Value extends SecretPayload {
+public class ValuePayload extends SecretPayload {
 
     private String value;
 }

@@ -32,18 +32,12 @@ public class SecretTypeIdResolver implements TypeIdResolver {
 
     @Override
     public String idFromValueAndType(Object obj, Class<?> aClass) {
-        return aClass.getSimpleName();
+        return SecretType.of(aClass).getType();
     }
 
     @Override
-    public JavaType typeFromId(DatabindContext databindContext, String s) {
-        String packageName = this.getClass().getPackage().getName();
-        String className = packageName + "." + s;
-        try {
-            return TypeFactory.defaultInstance().constructType(ClassLoader.getSystemClassLoader().loadClass(className));
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Unable to find class: " + s, e);
-        }
+    public JavaType typeFromId(DatabindContext databindContext, String type) {
+        return TypeFactory.defaultInstance().constructType(SecretType.of(type).getClazz());
     }
 
     @Override

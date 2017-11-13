@@ -1,7 +1,6 @@
 package com.ote.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ote.JsonUtils;
 import com.ote.domain.secret.spi.IGroup;
 import com.ote.domain.secret.spi.ISecret;
 import lombok.AccessLevel;
@@ -19,16 +18,4 @@ public class Group extends AdtSecret implements IGroup {
 
     @JsonIgnore
     private final List<ISecret> children = new ArrayList<>();
-
-    public ISecret[] getChildren() {
-        return this.children.toArray(new ISecret[0]);
-    }
-
-    public void add(ISecret children) {
-        this.children.add(children);
-    }
-
-    public void remove(ISecret children) {
-        this.children.remove(children);
-    }
 }

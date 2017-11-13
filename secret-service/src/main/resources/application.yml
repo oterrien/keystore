@@ -34,7 +34,3 @@ spring:
       path: /h2/console
   error:
     whitelabel.enabled: true
-
-application:
-  with-details:
-    default: false

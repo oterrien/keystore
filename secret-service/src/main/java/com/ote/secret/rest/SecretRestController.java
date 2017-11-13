@@ -3,7 +3,7 @@ package com.ote.secret.rest;
 
 import com.ote.domain.secret.api.ISecretService;
 import com.ote.domain.secret.business.NotFoundException;
-import com.ote.secret.peristence.SecretEntity;
+import com.ote.secret.peristence.SecretJpaRepository;
 import com.ote.secret.rest.payload.SecretPayload;
 import com.ote.secret.service.SecretMapperService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/v1/secrets")
@@ -26,40 +25,38 @@ public class SecretRestController {
     @Autowired
     private ISecretService secretServiceAdapter;
 
-    private List<SecretPayload> secretList = new ArrayList<>();
+    @Autowired
+    private SecretJpaRepository secretJpaRepository;
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public SecretPayload create(@RequestBody SecretPayload payload) {
-
-        secretList.add(payload);
-        return payload;
+    public Long create(@RequestBody SecretPayload payload) {
+        return null;
     }
 
-    @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}/children", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void createEntity() {
+    public Long[] getChildren(@PathVariable long id) {
+        return null;
+    }
 
-        SecretEntity entity = new SecretEntity();
-        entity.setName("Root");
-
+    @RequestMapping(value = "/{id}/children", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public SecretPayload setChildren(@PathVariable("id") long id,
+                                     @RequestBody Long[] children) {
+        Arrays.stream(children, 0, children.length).forEach(p -> System.out.println(p));
+        return null;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public SecretPayload read(@PathVariable("id") long id) throws NotFoundException{
-
-        return secretList.stream().filter(p -> p.getId()==id).findAny().orElseThrow(()-> new NotFoundException(Long.toString(id)));
+    public SecretPayload read(@PathVariable("id") long id,
+                              @RequestParam(value = "parentDepth", defaultValue = "1") int parentDepth,
+                              @RequestParam(value = "childrenDepth", defaultValue = "1") int childrenDepth) throws NotFoundException {
+        return null;
     }
-
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public List<SecretPayload> readAll(@RequestParam(value = "withDetails", defaultValue = "${application.with-details.default}") boolean withDetails) {
-       return secretList;
-    }
-
 }

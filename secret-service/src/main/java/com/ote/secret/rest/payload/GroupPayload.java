@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Group extends SecretPayload {
+public class GroupPayload extends SecretPayload {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<Long> children = new ArrayList<>();
