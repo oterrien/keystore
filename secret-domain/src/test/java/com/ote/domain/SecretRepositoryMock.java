@@ -33,4 +33,17 @@ public class SecretRepositoryMock implements ISecretRepository {
     public Optional<ISecret> find(long id) {
         return secretList.stream().filter(p -> p.getId() == id).findAny();
     }
+
+    @Override
+    public void delete(long id) {
+
+        find(id).ifPresent(s ->
+                Optional.ofNullable(s.getParent()).
+                        ifPresent(p -> {
+                            p.getChildren().removeIf(s1 -> s1.getId() == id);
+                            save(p);
+                        }));
+        secretList.removeIf(p -> p.getId() == id);
+    }
+
 }

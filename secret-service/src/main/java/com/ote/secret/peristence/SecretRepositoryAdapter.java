@@ -15,14 +15,16 @@ public class SecretRepositoryAdapter implements ISecretRepository {
 
     @Override
     public long save(ISecret secret) {
-
-
-        return 0;
+        return secretJpaRepository.save((SecretEntity) secret).getId();
     }
 
     @Override
     public Optional<ISecret> find(long id) {
+        return Optional.ofNullable(secretJpaRepository.findOne(id));
+    }
 
-        return null;
+    @Override
+    public void delete(long id) {
+        secretJpaRepository.delete(id);
     }
 }

@@ -19,14 +19,14 @@ public abstract class AdtSecret implements ISecret {
 
     public final void setParent(IGroup parent) {
         Optional.ofNullable(this.parent).ifPresent(p -> {
-            if (p.hasChild(this)) {
-                p.removeChild(this);
+            if (p.getChildren().stream().anyMatch(p1 -> p1.equals(this))) {
+                p.getChildren().remove(this);
             }
         });
         this.parent = parent;
-        Optional.ofNullable(this.parent).ifPresent(p -> {
-            if (!p.hasChild(this)) {
-                p.addChild(this);
+        Optional.ofNullable(parent).ifPresent(p -> {
+            if (p.getChildren().stream().noneMatch(p1 -> p1.equals(this))) {
+                p.getChildren().add(this);
             }
         });
     }

@@ -1,117 +1,78 @@
 package com.ote.secret.service;
 
+import com.ote.domain.secret.spi.IGroup;
+import com.ote.domain.secret.spi.ISecret;
+import com.ote.domain.secret.spi.IValue;
+import com.ote.secret.peristence.SecretEntity;
 import com.ote.secret.peristence.SecretJpaRepository;
+import com.ote.secret.rest.payload.GroupPayload;
+import com.ote.secret.rest.payload.SecretPayload;
+import com.ote.secret.rest.payload.ValuePayload;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class SecretMapperService {
 
-    @Value("${application.with-details.default}")
-    private boolean withDetailsDefault;
-
     @Autowired
-    private SecretJpaRepository secretRepository;
+    private SecretJpaRepository secretJpaRepository;
 
-/*
-    public ISecret convertToSecret(SecretPayload payload){throw new RuntimeException();
-        */
-/*ISecret secret;
-        if (payload.getValue()!=null){
-            secret = new SecretValue();
-        } else {
-            secret = new SecretGroup();
+    //region convert payload to entity
+    public SecretEntity convert(SecretPayload payload) {
+        switch (payload.getType()) {
+            case GROUP:
+                return convert((GroupPayload) payload);
+            case VALUE:
+            default:
+                return convert((ValuePayload) payload);
         }
-        secret.setId(payload.getId());
-        secret.setName(payload.getName());
-        secret.setParent(convertToGroup(payload.getParent()));
-        if (payload.getValue()!=null){
-            secret.setValue();
+    }
+
+    private SecretEntity convert(ValuePayload payload) {
+        SecretEntity valueEntity = new SecretEntity();
+        valueEntity.setId(Optional.ofNullable(payload.getId()).orElse(0L));
+        valueEntity.setName(payload.getName());
+        valueEntity.setParent(Optional.ofNullable(secretJpaRepository.findOne(payload.getParentId())).orElse(secretJpaRepository.findRoot()));
+        valueEntity.setValue(payload.getValue());
+        return valueEntity;
+    }
+
+    private SecretEntity convert(GroupPayload payload) {
+        SecretEntity groupEntity = new SecretEntity();
+        groupEntity.setId(payload.getId());
+        groupEntity.setName(payload.getName());
+        groupEntity.setParent(secretJpaRepository.findOne(payload.getParentId()));
+        payload.getChildren().forEach(childId -> groupEntity.getChildren().add(secretJpaRepository.findOne(childId)));
+        return groupEntity;
+    }
+    //endregion
+
+    // region convert entity to payload
+    public SecretPayload convert(SecretEntity secret) {
+        if (secret.getValue() != null) {
+            return convert((IValue) secret);
         }
-        return secret;*//*
-
+        return convert((IGroup) secret);
     }
 
-    private IValue convertToValue(SecretPayload payload){
-        IValue value = new SecretValue();
-        value.setId(payload.getId());
-        value.setName(payload.getName());
-        value.setParent(convertToGroup(payload.getParent()));
-        value.setValue(payload.getValue());
-        return value;
-    }
-
-    private IGroup convertToGroup(SecretPayload payload){
-        IGroup group = new SecretGroup();
-        group.setId(payload.getId());
-        group.setName(payload.getName());
-        group.setParent(convertToGroup(payload.getParent()));
-        return group;
-    }
-
-    public List<SecretPayload> convert(List<SecretEntity> entities) {
-        return convert(entities, withDetailsDefault);
-    }
-
-    public List<SecretPayload> convert(List<SecretEntity> entities, boolean withDetails) {
-        return entities.stream().
-                map(p -> convert(p, withDetails)).
-                collect(Collectors.toList());
-    }
-
-    public SecretPayload convert(SecretEntity entity) {
-        return convert(entity, withDetailsDefault);
-    }
-
-    public SecretPayload convert(SecretEntity entity, boolean withDetails) {
-        SecretPayload payload = new SecretPayload();
-        payload.setId(entity.getId());
-        payload.setName(entity.getName());
-        payload.setValue(entity.getValue());
-        if (entity.getParent() != null) {
-            setParent(payload, entity.getParent(), withDetails);
-        }
+    private ValuePayload convert(IValue secret) {
+        ValuePayload payload = new ValuePayload();
+        payload.setId(secret.getId());
+        payload.setName(secret.getName());
+        payload.setParentId(Optional.ofNullable(secret.getParent()).map(ISecret::getId).orElse(null));
+        payload.setValue(secret.getValue());
         return payload;
     }
 
-    private void setParent(SecretPayload payload, SecretEntity parent, boolean withDetails) {
-        payload.setParentId(parent.getId());
-        if (withDetails) {
-            SecretPayload parentPayload = new SecretPayload();
-            parentPayload.setId(parent.getId());
-            parentPayload.setName(parent.getName());
-            parentPayload.setValue(parent.getValue());
-            payload.setParent(parentPayload);
-            if (parent.getParent() != null) {
-                setParent(parentPayload, parent.getParent(), withDetails);
-            }
-        }
+    private GroupPayload convert(IGroup secret) {
+        GroupPayload payload = new GroupPayload();
+        payload.setId(secret.getId());
+        payload.setName(secret.getName());
+        payload.setParentId(Optional.ofNullable(secret.getParent()).map(ISecret::getId).orElse(null));
+        secret.getChildren().forEach(p -> payload.getChildren().add(p.getId()));
+        return payload;
     }
-
-    public SecretEntity convert(SecretPayload payload) {
-        SecretEntity entity = new SecretEntity();
-        entity.setId(payload.getId());
-        entity.setName(payload.getName());
-        entity.setValue(payload.getValue());
-        if (payload.getParentId() > 0) {
-            entity.setParent(secretRepository.findOne(payload.getParentId()));
-        } else if (payload.getParent() != null) {
-            setParent(entity, payload.getParent());
-        }
-        return entity;
-    }
-
-    private void setParent(SecretEntity entity, SecretPayload parent) {
-        SecretEntity parentEntity = new SecretEntity();
-        parentEntity.setId(parent.getId());
-        parentEntity.setName(parent.getName());
-        parentEntity.setValue(parent.getValue());
-        entity.setParent(parentEntity);
-        if (parent.getParent() != null) {
-            setParent(parentEntity, parent.getParent());
-        }
-    }
-*/
-
+    //endregion
 }

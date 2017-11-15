@@ -83,6 +83,25 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
+        long idGroup = secretService.create(secretFactory.createGroup("myGroup", root));
+        Group group = secretService.find(idGroup, Group.class);
+
+        long idValue = secretService.create(secretFactory.createValue("myValue", "password", group));
+        Value value = secretService.find(idValue, Value.class);
+
+        SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat(root.getChildren()).doesNotContain(value);
+        assertions.assertThat(group.getChildren()).containsExactly(value);
+        assertions.assertThat(value.getParent()).isEqualTo(group);
+        assertions.assertAll();
+    }
+
+    @Test
+    @DisplayName("a user should be able to add a value to a group")
+    public void aUserShouldBeAbleToMoveAValueToAGroup(TestInfo testInfo) throws Exception {
+
+        log.info("################ " + testInfo.getDisplayName() + " ################");
+
         long idValue = secretService.create(secretFactory.createValue("myValue", "password", root));
         long idGroup = secretService.create(secretFactory.createGroup("myGroup", root));
 
@@ -127,5 +146,24 @@ public class SecretServiceTest {
         assertions.assertThat(group1.getChildren()).containsExactly(group2);
         assertions.assertThat(group2.getParent()).isEqualTo(group1);
         assertions.assertAll();
+    }
+
+    @Test
+    @DisplayName("a user should be able to remove a secret")
+    public void aUserShouldBeAbleToRemoveASecret(TestInfo testInfo) throws Exception {
+
+        log.info("################ " + testInfo.getDisplayName() + " ################");
+
+        long idGroup1 = secretService.create(secretFactory.createGroup("group1", root));
+        Group group1 = secretService.find(idGroup1, Group.class);
+
+        long idGroup2 = secretService.create(secretFactory.createGroup("group2", group1));
+
+        secretService.remove(idGroup2);
+
+        group1 = secretService.find(idGroup1, Group.class);
+
+        Assertions.assertThrows(NotFoundException.class, () -> secretService.find(idGroup2));
+        org.assertj.core.api.Assertions.assertThat(group1.getChildren().stream().anyMatch(p -> p.getId() == idGroup2)).isFalse();
     }
 }

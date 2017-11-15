@@ -6,7 +6,7 @@ import com.ote.domain.secret.business.NotFoundException;
 import com.ote.domain.secret.spi.IGroup;
 import com.ote.domain.secret.spi.ISecret;
 import com.ote.domain.secret.spi.ISecretRepository;
-import com.ote.domain.secret.spi.IValue;
+import com.ote.secret.peristence.SecretEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +15,13 @@ public class SecretServiceAdapter implements ISecretService {
 
     private ISecretService secretService;
 
-    public SecretServiceAdapter(@Autowired ISecretRepository secretRepositoryAdapter) {
-        this.secretService = ServiceProvider.getInstance().createSecretService(secretRepositoryAdapter);
+    public SecretServiceAdapter(@Autowired ISecretRepository secretRepository) {
+        this.secretService = ServiceProvider.getInstance().createSecretService(secretRepository);
     }
 
     @Override
-    public long create(IValue value) {
-        return secretService.create(value);
-    }
-
-    @Override
-    public long create(IGroup group) {
-        return secretService.create(group);
+    public long create(ISecret secret) {
+        return secretService.create(secret);
     }
 
     @Override
@@ -35,7 +30,12 @@ public class SecretServiceAdapter implements ISecretService {
     }
 
     @Override
-    public ISecret find(long id) throws NotFoundException {
-        return secretService.find(id);
+    public SecretEntity find(long id) throws NotFoundException {
+        return (SecretEntity) secretService.find(id);
+    }
+
+    @Override
+    public void remove(long id) {
+        secretService.remove(id);
     }
 }

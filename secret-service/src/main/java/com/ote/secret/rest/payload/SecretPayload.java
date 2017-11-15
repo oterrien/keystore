@@ -16,12 +16,12 @@ import java.util.stream.Stream;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class SecretPayload {
 
+    private SecretType type;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
     private String name;
-
-    private SecretType type;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(value = "parent-id")

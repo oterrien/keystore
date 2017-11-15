@@ -6,8 +6,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class ValuePayload extends SecretPayload {
+
+    public ValuePayload(){
+        this.setType(SecretType.GROUP);
+    }
 
     private String value;
 }
