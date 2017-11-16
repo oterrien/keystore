@@ -1,7 +1,6 @@
 package com.ote.secret.peristence;
 
 import com.ote.domain.secret.spi.IGroup;
-import com.ote.domain.secret.spi.ISecret;
 import com.ote.domain.secret.spi.IValue;
 import lombok.*;
 
@@ -9,7 +8,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -38,12 +36,13 @@ public class SecretEntity implements IGroup, IValue, Serializable {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private List<SecretEntity> children;
 
+    @Override
     public void setParent(IGroup parent) {
-        Optional.ofNullable(this.parent).ifPresent(par -> par.children.removeIf(child -> child.getId() == this.id));
         setParent((SecretEntity) parent);
     }
 
     private void setParent(SecretEntity parent) {
+        Optional.ofNullable(this.parent).ifPresent(par -> par.children.removeIf(child -> child.getId() == this.id));
         this.parent = parent;
     }
 

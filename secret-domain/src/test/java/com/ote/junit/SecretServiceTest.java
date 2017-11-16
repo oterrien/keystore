@@ -1,5 +1,6 @@
-package com.ote.domain;
+package com.ote.junit;
 
+import com.ote.domain.mock.SecretRepositoryMock;
 import com.ote.domain.model.Group;
 import com.ote.domain.model.SecretFactory;
 import com.ote.domain.model.Value;
@@ -23,11 +24,9 @@ public class SecretServiceTest {
 
     private IGroup root;
 
-    private static final SecretFactory secretFactory = new SecretFactory();
-
     @BeforeEach
     public void setUp() {
-        this.root = secretFactory.createGroup("root", null);
+        this.root = SecretFactory.getInstance().createGroup("root", null);
         ISecretRepository secretRepository = new SecretRepositoryMock();
         secretRepository.save(root);
         secretService = ServiceProvider.getInstance().createSecretService(secretRepository);
@@ -39,7 +38,7 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long id = secretService.create(secretFactory.createValue("myValue", "password", root));
+        long id = secretService.create(SecretFactory.getInstance().createValue("myValue", "password", root));
         ISecret secret = secretService.find(id);
 
         SoftAssertions assertions = new SoftAssertions();
@@ -66,7 +65,7 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long id = secretService.create(secretFactory.createGroup("myGroup", root));
+        long id = secretService.create(SecretFactory.getInstance().createGroup("myGroup", root));
         ISecret secret = secretService.find(id);
 
         SoftAssertions assertions = new SoftAssertions();
@@ -83,10 +82,10 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long idGroup = secretService.create(secretFactory.createGroup("myGroup", root));
+        long idGroup = secretService.create(SecretFactory.getInstance().createGroup("myGroup", root));
         Group group = secretService.find(idGroup, Group.class);
 
-        long idValue = secretService.create(secretFactory.createValue("myValue", "password", group));
+        long idValue = secretService.create(SecretFactory.getInstance().createValue("myValue", "password", group));
         Value value = secretService.find(idValue, Value.class);
 
         SoftAssertions assertions = new SoftAssertions();
@@ -102,8 +101,8 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long idValue = secretService.create(secretFactory.createValue("myValue", "password", root));
-        long idGroup = secretService.create(secretFactory.createGroup("myGroup", root));
+        long idValue = secretService.create(SecretFactory.getInstance().createValue("myValue", "password", root));
+        long idGroup = secretService.create(SecretFactory.getInstance().createGroup("myGroup", root));
 
         Group group = secretService.find(idGroup, Group.class);
         Value value = secretService.find(idValue, Value.class);
@@ -128,8 +127,8 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long id1 = secretService.create(secretFactory.createGroup("group1", root));
-        long id2 = secretService.create(secretFactory.createGroup("group2", root));
+        long id1 = secretService.create(SecretFactory.getInstance().createGroup("group1", root));
+        long id2 = secretService.create(SecretFactory.getInstance().createGroup("group2", root));
 
         Group group1 = secretService.find(id1, Group.class);
         Group group2 = secretService.find(id2, Group.class);
@@ -154,10 +153,10 @@ public class SecretServiceTest {
 
         log.info("################ " + testInfo.getDisplayName() + " ################");
 
-        long idGroup1 = secretService.create(secretFactory.createGroup("group1", root));
+        long idGroup1 = secretService.create(SecretFactory.getInstance().createGroup("group1", root));
         Group group1 = secretService.find(idGroup1, Group.class);
 
-        long idGroup2 = secretService.create(secretFactory.createGroup("group2", group1));
+        long idGroup2 = secretService.create(SecretFactory.getInstance().createGroup("group2", group1));
 
         secretService.remove(idGroup2);
 

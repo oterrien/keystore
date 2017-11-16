@@ -1,4 +1,4 @@
-package com.ote.domain;
+package com.ote.domain.mock;
 
 import com.ote.domain.secret.spi.ISecret;
 import com.ote.domain.secret.spi.ISecretRepository;

@@ -2,8 +2,15 @@ package com.ote.domain.model;
 
 import com.ote.domain.secret.spi.IGroup;
 import com.ote.domain.secret.spi.IValue;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SecretFactory {
+
+    @Getter
+    private static final SecretFactory Instance = new SecretFactory();
 
     public IGroup createGroup(String name, IGroup parent) {
         Group group = new Group();
