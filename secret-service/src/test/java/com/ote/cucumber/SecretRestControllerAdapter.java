@@ -32,9 +32,13 @@ public class SecretRestControllerAdapter {
 
     public SecretPayload findSecret(long id) throws NotFoundException {
         try {
-            MvcResult result = webConfigurationTest.getMockMvc().perform(get(URI + "/" + id)).
-                    andReturn();
+            MvcResult result = webConfigurationTest.getMockMvc().perform(get(URI + "/" + id)).andReturn();
+            if (result.getResolvedException() != null) {
+                throw result.getResolvedException();
+            }
             return JsonUtils.parse(result.getResponse().getContentAsString(), SecretPayload.class);
+        } catch (NotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +54,12 @@ public class SecretRestControllerAdapter {
 
     public void changeParent(long id, long parentId) throws NotFoundException {
         try {
-            webConfigurationTest.getMockMvc().perform(put(URI + "/" + id + "/parent/" + parentId)).andReturn();
+            MvcResult result = webConfigurationTest.getMockMvc().perform(put(URI + "/" + id + "/parent/" + parentId)).andReturn();
+            if (result.getResolvedException() != null) {
+                throw result.getResolvedException();
+            }
+        } catch (NotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

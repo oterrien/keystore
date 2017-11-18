@@ -2,7 +2,6 @@ package com.ote.secret.rest;
 
 
 import com.ote.domain.secret.business.NotFoundException;
-import com.ote.domain.secret.spi.ISecret;
 import com.ote.secret.peristence.SecretEntity;
 import com.ote.secret.rest.payload.SecretPayload;
 import com.ote.secret.service.SecretMapperService;
@@ -43,7 +42,7 @@ public class SecretRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void deleteSecret(@PathVariable("id") long id) throws NotFoundException {
+    public void deleteSecret(@PathVariable("id") long id) {
         secretServiceAdapter.remove(id);
     }
 
