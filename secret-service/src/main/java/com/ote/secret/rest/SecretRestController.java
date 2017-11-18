@@ -24,7 +24,7 @@ public class SecretRestController {
     @Autowired
     private SecretMapperService secretMapperService;
 
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public long createSecret(@RequestBody SecretPayload payload) {
@@ -40,14 +40,14 @@ public class SecretRestController {
         return secretMapperService.convert(entity);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void deleteSecret(@PathVariable("id") long id) throws NotFoundException {
         secretServiceAdapter.remove(id);
     }
 
-    @RequestMapping(value = "/{id}/parent/{parentId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}/parent/{parentId}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void changeParent(@PathVariable("id") long id, @PathVariable("parentId") long parentId) throws NotFoundException {

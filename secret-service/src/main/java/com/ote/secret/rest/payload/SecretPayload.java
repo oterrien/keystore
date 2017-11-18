@@ -9,7 +9,7 @@ import lombok.*;
 
 import java.util.stream.Stream;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
 @JsonTypeIdResolver(SecretTypeIdResolver.class)
 @Getter
 @Setter
@@ -18,12 +18,12 @@ public abstract class SecretPayload {
 
     private SecretType type;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Long id;
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private long id;
 
     private String name;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     @JsonProperty(value = "parent-id")
-    private Long parentId;
+    private long parentId;
 }

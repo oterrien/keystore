@@ -9,4 +9,6 @@ public interface ISecretRepository {
     Optional<ISecret> find(long id);
 
     void delete(long id);
+
+    void deleteAll();
 }

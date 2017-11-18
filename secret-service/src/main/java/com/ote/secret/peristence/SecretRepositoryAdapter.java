@@ -27,4 +27,9 @@ public class SecretRepositoryAdapter implements ISecretRepository {
     public void delete(long id) {
         secretJpaRepository.delete(id);
     }
+
+    @Override
+    public void deleteAll() {
+        secretJpaRepository.deleteAll();
+    }
 }

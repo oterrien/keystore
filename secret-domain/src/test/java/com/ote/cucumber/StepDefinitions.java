@@ -63,7 +63,6 @@ public class StepDefinitions {
         secretParam.setParent(parent);
         secretParam.setType(Type.VALUE);
         secretParam.setValue(value);
-        Assumptions.assumeTrue(context.get(name + PARAM_SUFFIX) == null, "A secret with name '" + name + "' does already exist");
         context.put(name + PARAM_SUFFIX, secretParam);
     }
 
@@ -73,7 +72,6 @@ public class StepDefinitions {
         secretParam.setName(name);
         secretParam.setParent(parent);
         secretParam.setType(Type.GROUP);
-        Assumptions.assumeTrue(context.get(name + PARAM_SUFFIX) == null, "A secret with name '" + name + "' does already exist");
         context.put(name + PARAM_SUFFIX, secretParam);
     }
 

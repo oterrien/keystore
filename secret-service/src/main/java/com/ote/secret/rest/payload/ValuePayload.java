@@ -9,7 +9,7 @@ import lombok.Setter;
 public class ValuePayload extends SecretPayload {
 
     public ValuePayload(){
-        this.setType(SecretType.GROUP);
+        this.setType(SecretType.VALUE);
     }
 
     private String value;

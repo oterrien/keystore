@@ -61,7 +61,7 @@ public class SecretMapperService {
         ValuePayload payload = new ValuePayload();
         payload.setId(secret.getId());
         payload.setName(secret.getName());
-        payload.setParentId(Optional.ofNullable(secret.getParent()).map(ISecret::getId).orElse(null));
+        payload.setParentId(Optional.ofNullable(secret.getParent()).map(ISecret::getId).orElse(0l));
         payload.setValue(secret.getValue());
         return payload;
     }
@@ -70,7 +70,7 @@ public class SecretMapperService {
         GroupPayload payload = new GroupPayload();
         payload.setId(secret.getId());
         payload.setName(secret.getName());
-        payload.setParentId(Optional.ofNullable(secret.getParent()).map(ISecret::getId).orElse(null));
+        payload.setParentId(Optional.ofNullable(secret.getParent()).map(ISecret::getId).orElse(0l));
         secret.getChildren().forEach(p -> payload.getChildren().add(p.getId()));
         return payload;
     }

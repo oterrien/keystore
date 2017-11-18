@@ -3,21 +3,17 @@ logging:
     org.org.springframework.web: WARN
     com.ote.test: INFO
 
-server:
-  port: ${PORT:8080}
-
 spring:
   application:
-    name: Secret-Service
+    name: Secret-Service-Test
   main:
     banner-mode: LOG
   datasource:
-    url: jdbc:h2:./secret-service/database/secrets
+    url: jdbc:h2:mem:secretServiceTestDB;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password: admin
     driver-class-name: org.h2.Driver
-#    initialize: true
-    initialize: false
+    initialize: true
     continue-on-error: true
     platform: h2
   jpa:
@@ -26,11 +22,6 @@ spring:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
     hibernate:
       naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: none
-#      ddl-auto: create-drop
-  h2:
-    console:
-      enabled: true
-      path: /h2/console
+      ddl-auto: create-drop
   error:
     whitelabel.enabled: true
