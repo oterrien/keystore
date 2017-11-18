@@ -1,5 +1,8 @@
 Feature: secret feature
 
+  As a user,
+  I want to be able to create, move and delete secrets
+
   Background: Root is created
     Given I have created the group 'Root'
 

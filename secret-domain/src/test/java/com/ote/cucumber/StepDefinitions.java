@@ -3,6 +3,7 @@ package com.ote.cucumber;
 import com.ote.domain.mock.SecretRepositoryMock;
 import com.ote.domain.secret.api.ISecretService;
 import com.ote.domain.secret.api.ServiceProvider;
+import com.ote.domain.secret.business.NotFoundException;
 import com.ote.domain.secret.spi.IGroup;
 import com.ote.domain.secret.spi.ISecret;
 import com.ote.domain.secret.spi.IValue;
@@ -13,8 +14,11 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assumptions;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 public class StepDefinitions {
@@ -39,25 +43,35 @@ public class StepDefinitions {
         secretRepository.deleteAll();
     }
 
-    @Given("I have created the group '" + ROOT_NAME + "'")
-    public void rootHasBeenCreated() throws Throwable {
-        groupHasBeenCreated(ROOT_NAME, null);
+    @Given("I have created the group '(.*)'")
+    public void groupHasBeenCreated(String name) throws Throwable {
+        groupHasBeenCreated(ROOT_NAME, name);
     }
 
-    @Given("I have created the group '(.*)' under group '(.*)'")
-    public void groupHasBeenCreated(String name, String parent) throws Throwable {
-        groupHasBeenDeclared(name, parent);
+    @Given("I have created, under '(.*)', the group '(.*)'")
+    public void groupHasBeenCreated(String parent, String name) throws Throwable {
+        groupHasBeenDeclared(parent, name);
         createSecret(name);
     }
 
-    @Given("I have created the secret '(.*)' under group '(.*)' with value '(.*)'")
-    public void valueHasBeenCreated(String name, String parent, String value) throws Throwable {
-        valueHasBeenDeclared(name, parent, value);
+    @Given("I have created the secret '(.*)' with value '(.*)'")
+    public void valueHasBeenCreated(String name, String value) throws Throwable {
+        valueHasBeenCreated(ROOT_NAME, name, value);
+    }
+
+    @Given("I have created, under '(.*)', the secret '(.*)' with value '(.*)'")
+    public void valueHasBeenCreated(String parent, String name, String value) throws Throwable {
+        valueHasBeenDeclared(parent, name, value);
         createSecret(name);
     }
 
-    @Given("I have declared the secret '(.*)' under group '(.*)' with value '(.*)'")
-    public void valueHasBeenDeclared(String name, String parent, String value) {
+    @Given("I have declared the secret '(.*)' with value '(.*)'")
+    public void valueHasBeenDeclared(String name, String value) {
+        valueHasBeenDeclared(ROOT_NAME, name, value);
+    }
+
+    @Given("I have declared, under '(.*)', the secret '(.*)' with value '(.*)'")
+    public void valueHasBeenDeclared(String parent, String name, String value) {
         SecretParam secretParam = new SecretParam();
         secretParam.setName(name);
         secretParam.setParent(parent);
@@ -66,8 +80,13 @@ public class StepDefinitions {
         context.put(name + PARAM_SUFFIX, secretParam);
     }
 
-    @Given("I have declared the group '(.*)' under group '(.*)'")
-    public void groupHasBeenDeclared(String name, String parent) {
+    @Given("I have declared the group '(.*)'")
+    public void groupHasBeenDeclared(String name) {
+        groupHasBeenDeclared(ROOT_NAME, name);
+    }
+
+    @Given("I have declared, under '(.*)', the group '(.*)'")
+    public void groupHasBeenDeclared(String parent, String name) {
         SecretParam secretParam = new SecretParam();
         secretParam.setName(name);
         secretParam.setParent(parent);
@@ -89,6 +108,13 @@ public class StepDefinitions {
         secretService.move(secret, parentGroup);
     }
 
+    @When("I remove the secret '(.*)'")
+    public void removeSecret(String name) throws Throwable {
+
+        ISecret secret = context.get(name + RESULT_SUFFIX, ISecret.class);
+        secretService.remove(secret.getId());
+    }
+
     private IGroup findGroup(String name) {
         return context.get(name + RESULT_SUFFIX, IGroup.class);
     }
@@ -106,6 +132,7 @@ public class StepDefinitions {
 
         SecretParam secretParam = context.get(name + PARAM_SUFFIX, SecretParam.class);
         ISecret secret = context.get(name + RESULT_SUFFIX, ISecret.class);
+        secret = secretService.find(secret.getId());
 
         Assumptions.assumeTrue(secret != null);
 
@@ -120,23 +147,58 @@ public class StepDefinitions {
         softAssertions.assertAll();
     }
 
+    @Then("the secret '(.*)' is removed")
+    public void secretIsRemoved(String name) {
+        ISecret secret = context.get(name + RESULT_SUFFIX, ISecret.class);
+        Assertions.assertThatThrownBy(() -> secretService.find(secret.getId(), ISecret.class)).
+                isInstanceOf(NotFoundException.class);
+    }
+
     @Then("the secret '(.*)' is child of '(.*)'")
     public void secretIsChildOf(String name, String parent) throws Throwable {
-        ISecret secret = context.get(name + RESULT_SUFFIX, ISecret.class);
-        IGroup parentGroup = context.get(parent + RESULT_SUFFIX, IGroup.class);
-        SoftAssertions softAssertions = new SoftAssertions();
-        softAssertions.assertThat(secret.getParent()).isEqualTo(parentGroup);
-        softAssertions.assertThat(parentGroup.getChildren()).contains(secret);
-        softAssertions.assertAll();
+        secretChildOf(name, parent, true);
     }
 
     @Then("the secret '(.*)' is not child of '(.*)'")
     public void secretIsNotChildOf(String name, String parent) throws Throwable {
+        secretChildOf(name, parent, false);
+    }
+
+    @Then("the group '(.*)' should contain '(.*)'")
+    public void groupIsParentOf(String parent, String name) throws Throwable {
+        secretChildOf(name, parent, true);
+    }
+
+    @Then("the group '(.*)' should not contain '(.*)'")
+    public void groupIsNotParentOf(String parent, String name) throws Throwable {
+        secretChildOf(name, parent, false);
+    }
+
+    private void secretChildOf(String name, String parent, boolean isChildOf) throws Throwable {
         ISecret secret = context.get(name + RESULT_SUFFIX, ISecret.class);
+        long secretId = secret.getId();
+        try {
+            secret = secretService.find(secretId); // could be null
+        } catch (NotFoundException e) {
+            secret = null;
+        }
         IGroup parentGroup = context.get(parent + RESULT_SUFFIX, IGroup.class);
+        parentGroup = (IGroup) secretService.find(parentGroup.getId());
+
         SoftAssertions softAssertions = new SoftAssertions();
-        softAssertions.assertThat(secret.getParent()).isNotEqualTo(parentGroup);
-        softAssertions.assertThat(parentGroup.getChildren()).doesNotContain(secret);
+        if (isChildOf) {
+            if (secret != null) {
+                softAssertions.assertThat(secret.getParent().getId()).isEqualTo(parentGroup.getId());
+            }
+            softAssertions.assertThat(parentGroup.getChildren().stream().map(ISecret::getId).collect(Collectors.toList())).contains(secretId);
+        } else {
+            if (secret != null) {
+                softAssertions.assertThat(secret.getParent().getId()).isNotEqualTo(parentGroup.getId());
+            }
+            softAssertions.assertThat(parentGroup.getChildren().stream().map(ISecret::getId).collect(Collectors.toList())).doesNotContain(secretId);
+        }
         softAssertions.assertAll();
     }
+
+
 }
