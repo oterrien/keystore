@@ -112,7 +112,7 @@ public class SecretServiceTest {
         group = secretService.find(idGroup, Group.class);
         value = secretService.find(idValue, Value.class);
 
-        log.info("Value: " + value);
+        log.info("VALUE: " + value);
 
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(root.getChildren()).doesNotContain(value);
@@ -138,7 +138,7 @@ public class SecretServiceTest {
         group1 = secretService.find(id1, Group.class);
         group2 = secretService.find(id2, Group.class);
 
-        log.info("Group: " + group2);
+        log.info("GROUP: " + group2);
 
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(root.getChildren()).doesNotContain(group2);

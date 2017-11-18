@@ -46,4 +46,8 @@ public class SecretRepositoryMock implements ISecretRepository {
         secretList.removeIf(p -> p.getId() == id);
     }
 
+    public  void deleteAll(){
+        secretList.clear();
+    }
+
 }

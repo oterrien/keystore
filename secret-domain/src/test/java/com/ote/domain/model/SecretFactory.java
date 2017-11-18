@@ -22,8 +22,8 @@ public final class SecretFactory {
     public IValue createValue(String name, String secretValue, IGroup parent) {
         Value value = new Value();
         value.setName(name);
-        value.setValue(secretValue);
         value.setParent(parent);
+        value.setValue(secretValue);
         return value;
     }
 }
