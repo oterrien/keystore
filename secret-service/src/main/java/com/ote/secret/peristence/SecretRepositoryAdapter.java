@@ -1,6 +1,6 @@
 package com.ote.secret.peristence;
 
-import com.ote.domain.secret.spi.ISecret;
+import com.ote.domain.secret.api.model.Secret;
 import com.ote.domain.secret.spi.ISecretRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,25 +11,20 @@ import java.util.Optional;
 public class SecretRepositoryAdapter implements ISecretRepository {
 
     @Autowired
+    private SecretEntityMapperService secretEntityMapperService;
+
+    @Autowired
     private SecretJpaRepository secretJpaRepository;
 
     @Override
-    public long save(ISecret secret) {
-        return secretJpaRepository.save((SecretEntity) secret).getId();
+    public void save(Secret secret) {
+        secretJpaRepository.save(secretEntityMapperService.convert(secret));
     }
 
     @Override
-    public Optional<ISecret> find(long id) {
-        return Optional.ofNullable(secretJpaRepository.findOne(id));
-    }
+    public Optional<Secret> find(String name) {
 
-    @Override
-    public void delete(long id) {
-        secretJpaRepository.delete(id);
-    }
-
-    @Override
-    public void deleteAll() {
-        secretJpaRepository.deleteAll();
+        return Optional.ofNullable(secretJpaRepository.findOne(name)).
+                map(p -> secretEntityMapperService.convert(p));
     }
 }

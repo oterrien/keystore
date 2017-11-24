@@ -1,14 +1,12 @@
 package com.ote.domain.secret.spi;
 
+import com.ote.domain.secret.api.model.Secret;
+
 import java.util.Optional;
 
 public interface ISecretRepository {
 
-    long save(ISecret secret);
+    void save(Secret secret);
 
-    Optional<ISecret> find(long id);
-
-    void delete(long id);
-
-    void deleteAll();
+    Optional<Secret> find(String name);
 }

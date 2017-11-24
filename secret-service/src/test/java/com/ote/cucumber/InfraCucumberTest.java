@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 @Tag("cucumber")
 @CucumberOptions(
-        plugin = {"pretty"},
+        format = {"pretty"},
         features = "src/test/resources/features",
         tags = {"~@Ignore"},
         glue = "com.ote.cucumber")

@@ -8,7 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @Controller
 public class SecretRestControllerAdapter {
@@ -18,46 +19,24 @@ public class SecretRestControllerAdapter {
     @Autowired
     private WebConfigurationTest webConfigurationTest;
 
-    public long createSecret(SecretPayload payload) {
+    public void createSecret(SecretPayload payload) {
         try {
             MvcResult result = webConfigurationTest.getMockMvc().perform(post(URI).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JsonUtils.serialize(payload))).
                     andReturn();
-            return Long.parseLong(result.getResponse().getContentAsString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public SecretPayload findSecret(long id) throws NotFoundException {
+    public SecretPayload findSecret(String name) throws NotFoundException {
         try {
-            MvcResult result = webConfigurationTest.getMockMvc().perform(get(URI + "/" + id)).andReturn();
+            MvcResult result = webConfigurationTest.getMockMvc().perform(get(URI + "/" + name)).andReturn();
             if (result.getResolvedException() != null) {
                 throw result.getResolvedException();
             }
             return JsonUtils.parse(result.getResponse().getContentAsString(), SecretPayload.class);
-        } catch (NotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void deleteSecret(long id) throws NotFoundException {
-        try {
-            webConfigurationTest.getMockMvc().perform(delete(URI + "/" + id)).andReturn();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void changeParent(long id, long parentId) throws NotFoundException {
-        try {
-            MvcResult result = webConfigurationTest.getMockMvc().perform(put(URI + "/" + id + "/parent/" + parentId)).andReturn();
-            if (result.getResolvedException() != null) {
-                throw result.getResolvedException();
-            }
         } catch (NotFoundException e) {
             throw e;
         } catch (Exception e) {

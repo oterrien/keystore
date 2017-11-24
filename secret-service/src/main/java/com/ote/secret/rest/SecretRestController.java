@@ -2,9 +2,7 @@ package com.ote.secret.rest;
 
 
 import com.ote.domain.secret.business.NotFoundException;
-import com.ote.secret.peristence.SecretEntity;
 import com.ote.secret.rest.payload.SecretPayload;
-import com.ote.secret.service.SecretMapperService;
 import com.ote.secret.service.SecretServiceAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,37 +19,19 @@ public class SecretRestController {
     private SecretServiceAdapter secretServiceAdapter;
 
     @Autowired
-    private SecretMapperService secretMapperService;
+    private SecretPayloadMapperService secretPayloadMapperService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public long createSecret(@RequestBody SecretPayload payload) {
-        SecretEntity entity = secretMapperService.convert(payload);
-        return secretServiceAdapter.create(entity);
+    public void createSecret(@RequestBody SecretPayload payload) {
+        secretServiceAdapter.create(secretPayloadMapperService.convert(payload));
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public SecretPayload findSecret(@PathVariable("id") long id) throws NotFoundException {
-        SecretEntity entity = secretServiceAdapter.find(id);
-        return secretMapperService.convert(entity);
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public void deleteSecret(@PathVariable("id") long id) {
-        secretServiceAdapter.remove(id);
-    }
-
-    @RequestMapping(value = "/{id}/parent/{parentId}", method = RequestMethod.PUT)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public void changeParent(@PathVariable("id") long id, @PathVariable("parentId") long parentId) throws NotFoundException {
-        SecretEntity entity = secretServiceAdapter.find(id);
-        SecretEntity parent = secretServiceAdapter.find(parentId);
-        secretServiceAdapter.move(entity, parent);
+    public SecretPayload findSecret(@PathVariable("name") String name) throws NotFoundException {
+        return secretPayloadMapperService.convert(secretServiceAdapter.find(name));
     }
 }
