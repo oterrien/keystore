@@ -1,20 +1,131 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div>
-  <h1>{{title}}</h1>
-  <div>
-    <label for="name">Name</label>
-    <input type='text' id="name" [(ngModel)]="name">
-    <h3>{{name}}</h3>
+<nav class="navbar navbar-light bg-light justify-content-between">
+  <h4 class="navbar-brand">Secret Keystore</h4>
+  <form class="form-inline">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form>
+</nav>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div> <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <label for="description">Description</label>
-    <input type='text' id="description" [(ngModel)]="description">
+  <div class="w-100"></div>
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header">Featured</h4>
+        <div class="card-body">
+          <h4 class="card-title">Special title treatment</h4>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <label for="value">Value</label>
-    <input type='text' id="value" [(ngModel)]="value">
-  </div>
-  <div>
-    <a (click)="save()">Save</a>
-  </div>
+  <!--<div class="card" style="width: 20rem;" *ngIf='secret'>
+    <h4 class="card-title col">{{title}}</h4>
+    <div class="card-body">
+      <label for="name">Name</label>
+      <input class="form-control mr-sm-2" type='text' id="name" [(ngModel)]="secret.name">
+    </div>
+    <div class="card-body">
+      <label class="col" for="description">Description</label>
+      <input class="form-control mr-sm-2" type='text' id="description" [(ngModel)]="secret.description">
+    </div>
+    <div class="card-body">
+      <label class="col" for="value">Value</label>
+      <input class="form-control mr-sm-2" type='password' id="value" [(ngModel)]="secret.value">
+    </div>
+    <div class="card-body">
+      <a class="btn btn-outline-primary my-2 my-sm-0" href="#" role="button" (click)="save()">Save</a>
+    </div>
+  </div>-->
 </div>
